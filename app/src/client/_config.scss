@@ -1,0 +1,78 @@
+// First override some or all individual color variables
+$primary: #25408f;
+$secondary: #8f5325;
+$success: #3e8d63;
+$info: #13101c;
+$warning: #945707;
+$danger: #d62518;
+$light: #f8f9fa;
+$dark: #343a40;
+
+// Then add them to your custom theme-colors map, together with any additional colors you might need
+$theme-colors: (
+    primary: $primary,
+    secondary: $secondary,
+    success: $success,
+    info: $info,
+    warning: $warning,
+    danger: $danger,
+    light: $light,
+    dark: $dark,
+    // add any additional color below
+    // https://coolors.co/1a535c-4ecdc4-f7fff7-ff6b6b-ffe66d
+    midnight-green-eagle-green: #1a535cff,
+    medium-turquoise: #4ecdc4ff,
+    mint-cream: #f7fff7ff,
+    bittersweet: #ff6b6bff,
+    yellow-crayola: #ffe66dff,
+);
+
+/* =========== grabbed mixins ================= */
+@mixin for-phone-only {
+    @media screen and (max-width: 599px) {
+        @content;
+    }
+}
+
+@mixin for-tablet-portrait-up {
+    @media screen and (min-width: 600px) {
+        @content;
+    }
+}
+
+@mixin for-tablet-landscape-up {
+    @media screen and (min-width: 900px) {
+        @content;
+    }
+}
+
+@mixin for-desktop-up {
+    @media screen and (min-width: 1200px) {
+        @content;
+    }
+}
+
+@mixin for-big-desktop-up {
+    @media screen and (min-width: 1800px) {
+        @content;
+    }
+}
+
+/* ============== custom mixins based on videos =================== */
+@mixin media-sm {
+    @media screen and (max-width: 600px) {
+        @content;
+    }
+}
+
+@mixin media-md {
+    @media screen and (max-width: 768px) {
+        @content;
+    }
+}
+
+@mixin media-lg {
+    @media screen and (max-width: 1024px) {
+        @content;
+    }
+}
