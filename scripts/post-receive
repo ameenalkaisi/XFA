@@ -1,0 +1,8 @@
+#! /bin/bash
+
+main_dir=/var/www/xfa.ameen-alkaisi.tech/;
+GIT_WORK_TREE=$main_dir git checkout -qf --force main;
+cd $main_dir/app;
+npm install --production;
+npm prune --production;
+node node_modules/webpack/bin/webpack.js build;
