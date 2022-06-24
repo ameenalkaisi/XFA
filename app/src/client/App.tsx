@@ -1,7 +1,7 @@
 import * as React from 'react';
 const App = (): JSX.Element => {
 	return (
-		<h1> Hello </h1>
+		<h1> WIP </h1>
 	);
 }
 
