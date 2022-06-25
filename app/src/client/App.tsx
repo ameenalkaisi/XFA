@@ -1,7 +1,9 @@
 import * as React from 'react';
+import GraphCreator from './components/GraphCreator';
+
 const App = (): JSX.Element => {
 	return (
-		<h1> WIP </h1>
+		<GraphCreator />
 	);
 }
 
