@@ -1,6 +1,45 @@
 import * as React from 'react';
 import Graph from '../../utility/graph';
-import ReactFlow, { Edge, Node, useEdgesState, useNodesState } from 'react-flow-renderer';
+import ReactFlow, { ConnectionLineType, Edge, Node, Position, useEdgesState, useNodesState } from 'react-flow-renderer';
+import dagre from 'dagre';
+
+const dagreGraph = new dagre.graphlib.Graph();
+dagreGraph.setDefaultEdgeLabel(() => ({}));
+
+const nodeWidth = 172;
+const nodeHeight = 36;
+
+function getLayoutedFlowElements (nodes: Node[], edges: Edge[], direction = 'TB') {
+  const isHorizontal = direction === 'LR';
+  dagreGraph.setGraph({ rankdir: direction });
+
+  nodes.forEach((node: Node) => {
+    dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
+  });
+
+  edges.forEach((edge: Edge) => {
+    dagreGraph.setEdge(edge.source, edge.target);
+  });
+
+  dagre.layout(dagreGraph);
+
+  nodes.forEach((node: Node) => {
+    const nodeWithPosition = dagreGraph.node(node.id);
+    node.targetPosition = isHorizontal ? Position.Left :Position.Top;
+    node.sourcePosition = isHorizontal ? Position.Right : Position.Bottom;
+
+    // We are shifting the dagre node position (anchor=center center) to the top left
+    // so it matches the React Flow node anchor point (top left).
+    node.position = {
+      x: nodeWithPosition.x - nodeWidth / 2,
+      y: nodeWithPosition.y - nodeHeight / 2,
+    };
+
+    return node;
+  });
+
+  return { nodes, edges };
+};
 
 const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	const textAreaText = React.useRef<HTMLTextAreaElement>(null);
@@ -12,7 +51,7 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	{
 		id: '2',
 		data: { label: 'Node 2' },
-		position: { x: 20, y: 50 }
+		position: { x: 0, y: 0 }
 	}]);
 
 	const [edges, setEdges] = useEdgesState([]);
@@ -44,15 +83,10 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 
 	// converts the text in the text area into Graph then into Nodes and edges
 	// suitable to be a value for ReactFlow's nodes and edges props
-	function convertTATextToNodesEdges(): [Node[], Edge<any>[]] {
-		if (!textAreaText || !textAreaText.current)
-			return [[], []];
-
-		let currentTAText: Graph = parseText(textAreaText.current.value);
-
+	function convertGraphToFlowElements(graph: Graph): [Node[], Edge<any>[]] {
 		// convert each  node in the graph into a react-flow node
 		let resultNodes: Node[] = [];
-		currentTAText.nodes.forEach((val: string, index: number): void => {
+		graph.nodes.forEach((val: string, index: number): void => {
 			// push if NEW
 			resultNodes.push({
 				id: val,
@@ -64,11 +98,12 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 
 		// convert each  edge in the graph into a react-flow edge
 		let resultEdges: Edge<any>[] = [];
-		currentTAText.edges.forEach((val: string[], _index: number): void => {
+		graph.edges.forEach((val: string[], _index: number): void => {
 			resultEdges.push({
 				id: val[0] + '-' + val[1],
 				source: val[0],
-				target: val[1]
+				target: val[1],
+				animated: true
 			});
 		});
 
@@ -76,23 +111,33 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 		return [resultNodes, resultEdges];
 	}
 
+	function convertTATextToFlowElements(): [Node[], Edge<any>[]] {
+		if (!textAreaText || !textAreaText.current)
+			return [[], []];
+
+		return convertGraphToFlowElements(parseText(textAreaText.current.value));
+	}
+
 	function debug() {
 		// update graph when clicking debug
-		const updatedNodeEdge = convertTATextToNodesEdges();
+		const updatedNodeEdgePre = convertTATextToFlowElements();
+		const updatedNodeEdge = getLayoutedFlowElements(updatedNodeEdgePre[0], updatedNodeEdgePre[1], 'LR');
 		setNodes((newNodes: Node[]): Node[] => {
-			newNodes = updatedNodeEdge[0];
+			newNodes = updatedNodeEdge.nodes;
 			return newNodes;
 		});
 
 		setEdges((newEdges: Edge<any>[]): Edge<any>[] => {
-			newEdges = updatedNodeEdge[1];
+			newEdges = updatedNodeEdge.edges;
 			return newEdges;
 		});
 	}
 
 	return (
 		<div className="graph-creator">
-			<ReactFlow style={{ width: "20em", height: "20em" }} nodes={nodes} edges={edges} />
+			<ReactFlow style={{ width: "50em", height: "20em" }} 
+				nodes={nodes} edges={edges} 
+				connectionLineType={ConnectionLineType.SmoothStep} />
 			<textarea
 				id="graph-text"
 				rows={20}
