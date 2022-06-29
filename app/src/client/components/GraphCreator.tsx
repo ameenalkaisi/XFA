@@ -41,11 +41,10 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 
 	return (
 		<div className="graph-creator">
+			{/* For now width/height are set in (s)css, but place here something eventually*/}
 			<GraphDisplay graph={graph} />
 			<textarea
 				id="graph-text"
-				rows={20}
-				cols={30}
 				placeholder="node#-connected_node#,connected_node#,..."
 				ref={textAreaText} />
 			<button>Convert Graph!</button>

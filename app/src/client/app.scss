@@ -10,3 +10,15 @@
 	list-style: none;
 	text-decoration: none;
 }
+
+.graph-creator {
+	.react-flow {
+		width: 20em;
+		height: 20em;
+	}
+
+	textarea {
+		height: 10em;
+		width: 10em;
+	}
+}
