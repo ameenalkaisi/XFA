@@ -1,19 +1,24 @@
 import * as React from 'react';
-import ReactFlow, { ConnectionLineType, Edge, Node, Position, useEdgesState, useNodesState } from 'react-flow-renderer';
+import ReactFlow, { ConnectionLineType, Edge, MarkerType, Node, Position, useEdgesState, useNodesState } from 'react-flow-renderer';
 import Graph from '../../utility/graph';
 import dagre from 'dagre';
+import { SmartBezierEdge, SmartEdge, SmartStepEdge, SmartStraightEdge } from '@tisoap/react-flow-smart-edge'
 
 // NOTE: currently everything is being done in front-end, maybe should try backend later
 const GraphDisplay: React.FC<{ graph: Graph, graphDir?: string }> = ({ graph, graphDir }): React.ReactElement => {
 	const dagreGraph = new dagre.graphlib.Graph();
 	dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-	const nodeWidth = 80;
-	const nodeHeight = 36;
+	const nodeWidth = 200;
+	const nodeHeight = 100;
 
 	// initializing reactl-flow graph elements
 	const [nodes, setNodes] = useNodesState([]);
 	const [edges, setEdges] = useEdgesState([]);
+
+	const edgeTypes = React.useMemo(() => ({
+		smart: SmartBezierEdge
+	}), []);
 
 	// converts the text in the text area into Graph then into Nodes and edges
 	// suitable to be a value for ReactFlow's nodes and edges props
@@ -22,16 +27,17 @@ const GraphDisplay: React.FC<{ graph: Graph, graphDir?: string }> = ({ graph, gr
 		let resultNodes: Node[] = [];
 		graph.nodes.forEach((val: string, _index: number): void => {
 			// push if NEW
+			// todo: need to color differently instead
+			/*
 			let typeOfNode = 'default';
 			if(graph.startNodes.includes(val))
 				typeOfNode = 'input';
 			else if(graph.finalNodes.includes(val))
 				typeOfNode = 'output';
-
+			*/
 			resultNodes.push({
 				id: val,
 				data: { label: val },
-				type: typeOfNode,
 				position: { x: 0, y: 0 },
 			});
 		});
@@ -46,8 +52,10 @@ const GraphDisplay: React.FC<{ graph: Graph, graphDir?: string }> = ({ graph, gr
 					source: node1,
 					target: val,
 					label: input,
-					markerEnd: 'arrow',
-					animated: true
+					type: 'smart',
+					animated: true,
+					// todo: not working for some reason :(
+					markerEnd: MarkerType.ArrowClosed,
 				});
 			});
 		});
@@ -108,7 +116,9 @@ const GraphDisplay: React.FC<{ graph: Graph, graphDir?: string }> = ({ graph, gr
 	return (
 		<ReactFlow
 			nodes={nodes} edges={edges}
-			connectionLineType={ConnectionLineType.SmoothStep}
+			nodesConnectable={false}
+			elementsSelectable={false}
+			edgeTypes={edgeTypes}
 			fitView />
 	);
 }

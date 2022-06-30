@@ -15,7 +15,7 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	// otherwise make it only through this, and add syntax parsing related stuff
 	// format: node can be [0-9a-zA-Z]*\[[sf]\]
 	// node->node[,node]*
-	function findNodeType(node: string): 's' | 'f' | 'm' {
+	function findNodeType(node: string): 's' | 'f' | 'm' | 'sf' {
 		const matches = node.match(/\[(.*)\]/);
 
 		if (!matches)
@@ -24,7 +24,7 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 		// eventually will enforce syntactical checking
 		// for now ignore the issue
 		//@ts-ignore
-		return matches[0].charAt(1);
+		return matches[0].substring(1, matches[0].length - 1);
 	}
 
 	//the -> operator can have \[[0-9a-zA-Z]*\] next to it
@@ -50,9 +50,9 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 			if (mainNodeType !== 'm') {
 				mainNode = filterNonMiddleNode(mainNode);
 
-				if (mainNodeType === 's')
+				if (mainNodeType.includes('s'))
 					result.addStartNodes(mainNode);
-				else
+				if(mainNodeType.includes('f'))
 					result.addFinalNodes(mainNode);
 			}
 
@@ -71,9 +71,9 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 				// and filter it
 				if (currentNodeType !== 'm') {
 					tempNode = filterNonMiddleNode(tempNode);
-					if (tempNode === 's')
+					if (tempNode.includes('s'))
 						result.addStartNodes(tempNode);
-					else
+					if(tempNode.includes('f'))
 						result.addFinalNodes(tempNode);
 				}
 
@@ -85,13 +85,14 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	}
 
 	function filterNonMiddleNode(text: string): string {
-		return text.substring(0, text.length - 3);
+		return text.substring(0, text.indexOf('['));
 	}
 
 	function debug() {
 		if (!textAreaText || !textAreaText.current)
 			return;
 		setGraph(parseText(textAreaText.current.value));
+		//console.log(JSON.stringify(parseText(textAreaText.current.value)));
 	}
 
 	return (
@@ -100,7 +101,11 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 			<GraphDisplay graph={graph} />
 			<textarea
 				id="graph-text"
-				placeholder="node#-connectedNode#,connectedNode#,..."
+				placeholder={"Node1[s]->[edge-name]Node2,Node3,Node4[f]"
+					+ "Node3->Node4"
+					+ "\n\nNode can be in form (name)[in brackets, s if starting node,"
+						+ "f if ending node, or nothing without brackets if just a middle node]"
+					+ "\n\nThen graph is StartingNode->[input-in-brackets]FirstNode,SecondNode,..."}
 				ref={textAreaText} />
 			<button>Convert Graph!</button>
 			<button onClick={debug}>Debug</button>

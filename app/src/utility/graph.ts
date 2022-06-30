@@ -32,10 +32,8 @@ class Graph {
 		// otherwise look for it then add it if it's 
 		// not there
 		const key: string = node1 + "," + input;
-		if(!this.edges.has(key)) {
+		if(!this.edges.has(key))
 			this.edges.set(key, [node2]);
-			console.log(JSON.stringify(this.edges));
-		}
 		//@ts-ignore
 		else if(!this.edges.get(key).includes(node2))
 			//@ts-ignore
