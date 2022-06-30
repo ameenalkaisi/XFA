@@ -15,6 +15,12 @@
 	.react-flow {
 		width: 20em;
 		height: 20em;
+
+		&__node {
+			width: fit-content;
+			height: fit-content;
+		}
+
 	}
 
 	textarea {

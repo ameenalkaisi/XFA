@@ -8,7 +8,7 @@ const GraphDisplay: React.FC<{ graph: Graph, graphDir?: string }> = ({ graph, gr
 	const dagreGraph = new dagre.graphlib.Graph();
 	dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-	const nodeWidth = 172;
+	const nodeWidth = 80;
 	const nodeHeight = 36;
 
 	// initializing reactl-flow graph elements
@@ -22,21 +22,33 @@ const GraphDisplay: React.FC<{ graph: Graph, graphDir?: string }> = ({ graph, gr
 		let resultNodes: Node[] = [];
 		graph.nodes.forEach((val: string, _index: number): void => {
 			// push if NEW
+			let typeOfNode = 'default';
+			if(graph.startNodes.includes(val))
+				typeOfNode = 'input';
+			else if(graph.finalNodes.includes(val))
+				typeOfNode = 'output';
+
 			resultNodes.push({
 				id: val,
-				data: { label: 'Node ' + val },
+				data: { label: val },
+				type: typeOfNode,
 				position: { x: 0, y: 0 },
 			});
 		});
 
 		// convert each  edge in the graph into a react-flow edge
 		let resultEdges: Edge<any>[] = [];
-		graph.edges.forEach((val: string[], _index: number): void => {
-			resultEdges.push({
-				id: val[0] + '-' + val[1],
-				source: val[0],
-				target: val[1],
-				animated: true
+		graph.edges.forEach((outNodes: string[], key: string): void => {
+			outNodes.forEach((val: string, _index: number): void => {
+				const [node1, input] = key.split(",");
+				resultEdges.push({
+					id: node1 + '-' + input + '-' + val,
+					source: node1,
+					target: val,
+					label: input,
+					markerEnd: 'arrow',
+					animated: true
+				});
 			});
 		});
 
@@ -96,7 +108,7 @@ const GraphDisplay: React.FC<{ graph: Graph, graphDir?: string }> = ({ graph, gr
 	return (
 		<ReactFlow
 			nodes={nodes} edges={edges}
-			connectionLineType={ConnectionLineType.SmoothStep} 
+			connectionLineType={ConnectionLineType.SmoothStep}
 			fitView />
 	);
 }

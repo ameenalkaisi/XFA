@@ -13,24 +13,79 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	// note: 1-3 options could be one if possible
 	// "infer text-option" button
 	// otherwise make it only through this, and add syntax parsing related stuff
-	function parseText(text: String): Graph {
+	// format: node can be [0-9a-zA-Z]*\[[sf]\]
+	// node->node[,node]*
+	function findNodeType(node: string): 's' | 'f' | 'm' {
+		const matches = node.match(/\[(.*)\]/);
+
+		if (!matches)
+			return 'm';
+
+		// eventually will enforce syntactical checking
+		// for now ignore the issue
+		//@ts-ignore
+		return matches[0].charAt(1);
+	}
+
+	//the -> operator can have \[[0-9a-zA-Z]*\] next to it
+	//to assert INPUT
+	// realistically it's better to 
+	// implement using a parser solution
+	// but for now this will do
+	function parseText(text: string): Graph {
 		let result = new Graph();
 		let lines = text.split('\n');
 
 		// for each line, add each implied edge
 		for (let i = 0; i < lines.length; ++i) {
+
 			if (lines[i] == "") continue;
 
-			let all_nodes = lines[i].split('->');
-			let main_node = all_nodes[0];
-			let other_nodes_str = all_nodes[1];
-			let other_nodes = other_nodes_str.split(',');
+			let allNodes = lines[i].split('->[');
+			let mainNode = allNodes[0];
 
-			for (let j = 0; j < other_nodes.length; ++j)
-				result.addByEdge(main_node, other_nodes[j]);
+			// add main node to start/end based on its 
+			// input and filter it
+			let mainNodeType = findNodeType(mainNode);
+			if (mainNodeType !== 'm') {
+				mainNode = filterNonMiddleNode(mainNode);
+
+				if (mainNodeType === 's')
+					result.addStartNodes(mainNode);
+				else
+					result.addFinalNodes(mainNode);
+			}
+
+			// input of the edge
+			let input = allNodes[1].substring(0, allNodes[1].indexOf(']'));
+
+			// grabbing list of nodes
+			let otherNodes_str = allNodes[1].substring(allNodes[1].indexOf(']') + 1);
+			let otherNodes = otherNodes_str.split(',');
+			for (let j = 0; j < otherNodes.length; ++j) {
+				let tempNode = otherNodes[j];
+
+				let currentNodeType = findNodeType(tempNode);
+
+				// add node to start/end based on input
+				// and filter it
+				if (currentNodeType !== 'm') {
+					tempNode = filterNonMiddleNode(tempNode);
+					if (tempNode === 's')
+						result.addStartNodes(tempNode);
+					else
+						result.addFinalNodes(tempNode);
+				}
+
+				result.addByEdge(mainNode, input, tempNode);
+			}
 		}
 
 		return result;
+	}
+
+	function filterNonMiddleNode(text: string): string {
+		return text.substring(0, text.length - 3);
 	}
 
 	function debug() {
@@ -45,7 +100,7 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 			<GraphDisplay graph={graph} />
 			<textarea
 				id="graph-text"
-				placeholder="node#-connected_node#,connected_node#,..."
+				placeholder="node#-connectedNode#,connectedNode#,..."
 				ref={textAreaText} />
 			<button>Convert Graph!</button>
 			<button onClick={debug}>Debug</button>
