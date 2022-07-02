@@ -3,6 +3,7 @@ class Graph {
 
 	public startNodes: string[];
 	public finalNodes: string[];
+	public inputs: string[];
 
 	// Map of structure [Node, Input] -> ConnectedNodes
 	// note the Node and Input are joined by a literal comma
@@ -12,11 +13,16 @@ class Graph {
 		this.nodes = [];
 		this.startNodes = [];
 		this.finalNodes = [];
+		this.inputs = [];
 		this.edges = new Map<string, string[]>();
 	}
 
 	public includesNode(node: string): boolean {
 		return this.nodes.includes(node);
+	}
+
+	public includesInput(input: string): boolean {
+		return this.inputs.includes(input);
 	}
 
 	// automatically add new nodes by when creating edges
@@ -26,6 +32,9 @@ class Graph {
 
 		if (!this.includesNode(node2))
 			this.nodes.push(node2);
+
+		if(!this.inputs.includes(input))
+			this.inputs.push(input);
 
 		// if node 1 edges have never been initialized
 		// initialize it with one element node2

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Graph from '../../utility/graph';
+import { convertNFAtoDFA } from '../../utility/graph-utils';
 import GraphDisplay from './GraphDisplay';
 
 const GraphCreator: React.FC<{}> = (): React.ReactElement => {
@@ -7,6 +8,7 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	// text representation 
 	const textAreaText = React.useRef<HTMLTextAreaElement>(null);
 	const [graph, setGraph] = React.useState<Graph>(new Graph());
+	const [displayedGraph, setDisplayedGraph] = React.useState<Graph>(new Graph());
 
 	// todo: it is a "pane" that lets you create graphs inside of import
 	// has options of graph objecs: 1. <start node>, 2. <end node>, 3. <middle node>, 4. <line segment>
@@ -52,7 +54,7 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 
 				if (mainNodeType.includes('s'))
 					result.addStartNodes(mainNode);
-				if(mainNodeType.includes('f'))
+				if (mainNodeType.includes('f'))
 					result.addFinalNodes(mainNode);
 			}
 
@@ -73,7 +75,7 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 					tempNode = filterNonMiddleNode(tempNode);
 					if (tempNode.includes('s'))
 						result.addStartNodes(tempNode);
-					if(tempNode.includes('f'))
+					if (tempNode.includes('f'))
 						result.addFinalNodes(tempNode);
 				}
 
@@ -93,6 +95,8 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 			return;
 		setGraph(parseText(textAreaText.current.value));
 		//console.log(JSON.stringify(parseText(textAreaText.current.value)));
+		let newDFAgraph: Graph = convertNFAtoDFA(parseText(textAreaText.current.value));
+		setDisplayedGraph(newDFAgraph);
 	}
 
 	return (
@@ -104,11 +108,13 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 				placeholder={"Node1[s]->[edge-name]Node2,Node3,Node4[f]"
 					+ "Node3->Node4"
 					+ "\n\nNode can be in form (name)[in brackets, s if starting node,"
-						+ "f if ending node, or nothing without brackets if just a middle node]"
+					+ "f if ending node, or nothing without brackets if just a middle node]"
 					+ "\n\nThen graph is StartingNode->[input-in-brackets]FirstNode,SecondNode,..."}
 				ref={textAreaText} />
 			<button>Convert Graph!</button>
 			<button onClick={debug}>Debug</button>
+
+			{displayedGraph.nodes.length !== 0 && <GraphDisplay graph={displayedGraph} />}
 		</div>
 	);
 }

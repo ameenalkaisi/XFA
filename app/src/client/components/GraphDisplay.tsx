@@ -26,7 +26,6 @@ const GraphDisplay: React.FC<{ graph: Graph, graphDir?: string }> = ({ graph, gr
 		// convert each  node in the graph into a react-flow node
 		let resultNodes: Node[] = [];
 		graph.nodes.forEach((val: string, _index: number): void => {
-			// push if NEW
 			// todo: need to color differently instead
 			/*
 			let typeOfNode = 'default';
