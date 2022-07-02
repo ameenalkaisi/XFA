@@ -26,17 +26,24 @@ const GraphDisplay: React.FC<{ graph: Graph, graphDir?: string }> = ({ graph, gr
 		// convert each  node in the graph into a react-flow node
 		let resultNodes: Node[] = [];
 		graph.nodes.forEach((val: string, _index: number): void => {
-			// todo: need to color differently instead
-			/*
-			let typeOfNode = 'default';
-			if(graph.startNodes.includes(val))
-				typeOfNode = 'input';
-			else if(graph.finalNodes.includes(val))
-				typeOfNode = 'output';
-			*/
+			// color the background of the node 
+			// based off of where it belongs
+			
+			const inStartNodes: boolean = graph.startNodes.includes(val);
+			const inFinalNodes: boolean = graph.finalNodes.includes(val);
+
+			let nodeStyle: React.CSSProperties;
+			if(inStartNodes && inFinalNodes)
+				nodeStyle = {backgroundColor: 'lightpink'};
+			else if(inStartNodes)
+				nodeStyle = {backgroundColor: 'yellow'};
+			else if(inFinalNodes)
+				nodeStyle = {backgroundColor: 'lightgreen'};
+			else nodeStyle = {backgroundColor: 'white'};
 			resultNodes.push({
 				id: val,
 				data: { label: val },
+				style: nodeStyle,
 				position: { x: 0, y: 0 },
 			});
 		});
