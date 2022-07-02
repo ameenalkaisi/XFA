@@ -18,6 +18,7 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	// format: node can be [0-9a-zA-Z]*\[[sf]\]
 	// node->node[,node]*
 	function findNodeType(node: string): 's' | 'f' | 'm' | 'sf' {
+		// looks for text in between brackets
 		const matches = node.match(/\[(.*)\]/);
 
 		if (!matches)
@@ -73,9 +74,10 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 				// and filter it
 				if (currentNodeType !== 'm') {
 					tempNode = filterNonMiddleNode(tempNode);
-					if (tempNode.includes('s'))
+
+					if (currentNodeType.includes('s'))
 						result.addStartNodes(tempNode);
-					if (tempNode.includes('f'))
+					if (currentNodeType.includes('f'))
 						result.addFinalNodes(tempNode);
 				}
 
