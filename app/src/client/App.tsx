@@ -5,7 +5,7 @@ const App: React.FC<{}> = (): React.ReactElement => {
 	return (
 		<>
 			<GraphCreator />
-			<footer><p>This site is a work in progress. Made by Ameen Al-Kaisi 2022</p></footer>
+			<footer className="footer"><p className="footer__progress-text">This site is a work in progress. Made by Ameen Al-Kaisi 2022</p></footer>
 		</>
 	);
 }

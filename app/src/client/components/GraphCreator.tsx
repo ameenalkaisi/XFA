@@ -106,15 +106,15 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 			{/* For now width/height are set in (s)css, but place here something eventually*/}
 			<GraphDisplay graph={graph} />
 			<textarea
-				id="graph-text"
+				className="graph-creator__input-textarea"
 				placeholder={"Node1[s]->[edge-name]Node2,Node3,Node4[f]"
-					+ "Node3->Node4"
+					+ "\nNode3->Node4"
 					+ "\n\nNode can be in form (name)[in brackets, s if starting node,"
 					+ "f if ending node, or nothing without brackets if just a middle node]"
 					+ "\n\nThen graph is StartingNode->[input-in-brackets]FirstNode,SecondNode,..."}
 				ref={textAreaText} />
-			<button>Convert Graph!</button>
-			<button onClick={debug}>Debug</button>
+			<button className="graph-creator__convert-btn">Convert Graph!</button>
+			<button onClick={debug} className="graph-creator__debug-btn">Debug</button>
 
 			{displayedGraph.nodes.length !== 0 && <GraphDisplay graph={displayedGraph} />}
 		</div>

@@ -20,11 +20,10 @@
 			width: fit-content;
 			height: fit-content;
 		}
-
 	}
 
-	textarea {
-		height: 10em;
+	&__input-textarea {
+		height: 15em;
 		width: 50em;
 	}
 }
