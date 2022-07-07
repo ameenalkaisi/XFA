@@ -108,7 +108,7 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 			<textarea
 				className="graph-creator__input-textarea"
 				placeholder={"Node1[s]->[edge-name]Node2,Node3,Node4[f]"
-					+ "\nNode3->Node4"
+					+ "\nNode3->[another-edge-name]Node4"
 					+ "\n\nNode can be in form (name)[in brackets, s if starting node,"
 					+ "f if ending node, or nothing without brackets if just a middle node]"
 					+ "\n\nThen graph is StartingNode->[input-in-brackets]FirstNode,SecondNode,..."}
