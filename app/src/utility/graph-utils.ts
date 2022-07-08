@@ -32,8 +32,8 @@ export function convertNFAtoDFA(graph: Graph): Graph {
 				if (nodesNext)
 					generatedSublist.push(...nodesNext);
 			}
-			
-			if(generatedSublist.length === 0)
+
+			if (generatedSublist.length === 0)
 				continue;
 
 			// add it into the resulting graph
@@ -51,11 +51,11 @@ export function convertNFAtoDFA(graph: Graph): Graph {
 			// format generatedSublist and nodes so they have
 			// names suitable for output
 			let genString: string = generatedSublist[0];
-			for(let i = 1; i < generatedSublist.length; ++i)
+			for (let i = 1; i < generatedSublist.length; ++i)
 				genString += "-" + generatedSublist[i];
-			
+
 			let nodeString: string = nodes[0];
-			for(let i = 1; i < nodes.length; ++i)
+			for (let i = 1; i < nodes.length; ++i)
 				nodeString += "-" + nodes[i];
 
 			result.addByEdge(nodeString, input, genString);
@@ -69,4 +69,86 @@ export function convertNFAtoDFA(graph: Graph): Graph {
 	}
 
 	return result;
+}
+
+// todo: it is a "pane" that lets you create graphs inside of import
+// has options of graph objecs: 1. <start node>, 2. <end node>, 3. <middle node>, 4. <line segment>
+// note: 1-3 options could be one if possible
+// "infer text-option" button
+// otherwise make it only through this, and add syntax parsing related stuff
+// format: node can be [0-9a-zA-Z]*\[[sf]\]
+// node->node[,node]*
+export function findNodeType(node: string): 's' | 'f' | 'm' | 'sf' {
+	// looks for text in between brackets
+	const matches = node.match(/\[(.*)\]/);
+
+	if (!matches)
+		return 'm';
+
+	// eventually will enforce syntactical checking
+	// for now ignore the issue
+	//@ts-ignore
+	return matches[0].substring(1, matches[0].length - 1);
+}
+
+//the -> operator can have \[[0-9a-zA-Z]*\] next to it
+//to assert INPUT
+// realistically it's better to 
+// implement using a parser solution
+// but for now this will do
+export function parseText(text: string): Graph {
+	let result = new Graph();
+	let lines = text.split('\n');
+
+	// for each line, add each implied edge
+	for (let i = 0; i < lines.length; ++i) {
+
+		if (lines[i] == "") continue;
+
+		let allNodes = lines[i].split('->[');
+		let mainNode = allNodes[0];
+
+		// add main node to start/end based on its 
+		// input and filter it
+		let mainNodeType = findNodeType(mainNode);
+		if (mainNodeType !== 'm') {
+			mainNode = filterNonMiddleNode(mainNode);
+
+			if (mainNodeType.includes('s'))
+				result.addStartNodes(mainNode);
+			if (mainNodeType.includes('f'))
+				result.addFinalNodes(mainNode);
+		}
+
+		// input of the edge
+		let input = allNodes[1].substring(0, allNodes[1].indexOf(']'));
+
+		// grabbing list of nodes
+		let otherNodes_str = allNodes[1].substring(allNodes[1].indexOf(']') + 1);
+		let otherNodes = otherNodes_str.split(',');
+		for (let j = 0; j < otherNodes.length; ++j) {
+			let tempNode = otherNodes[j];
+
+			let currentNodeType = findNodeType(tempNode);
+
+			// add node to start/end based on input
+			// and filter it
+			if (currentNodeType !== 'm') {
+				tempNode = filterNonMiddleNode(tempNode);
+
+				if (currentNodeType.includes('s'))
+					result.addStartNodes(tempNode);
+				if (currentNodeType.includes('f'))
+					result.addFinalNodes(tempNode);
+			}
+
+			result.addByEdge(mainNode, input, tempNode);
+		}
+	}
+
+	return result;
+}
+
+export function filterNonMiddleNode(text: string): string {
+	return text.substring(0, text.indexOf('['));
 }
