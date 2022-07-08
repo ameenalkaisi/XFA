@@ -13,7 +13,11 @@
 
 .graph-creator {
 	display: grid;
-	grid-template-columns: 1fr auto auto 1fr;
+	grid-template-rows: 2fr 1fr;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		"left-display right-display"
+		"input input";
 
 	.graph-display {
 		width: 20em;
@@ -25,8 +29,19 @@
 		}
 	}
 
+	.graph-display:nth-child(0) {
+		grid-area: "left-display";
+	}
+	
+	.graph-display:nth-child(1) {
+		grid-area: "right-display";
+	}
+
 	&__input {
-		&--text-area {
+		grid-area: input;
+		justify-self: center;
+
+		&--textarea {
 			height: 15em;
 			width: 50em;
 		}

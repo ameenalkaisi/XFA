@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Graph from '../../utility/graph';
-import { convertNFAtoDFA } from '../../utility/graph-utils';
-import { parseText } from '../../utility/graph-utils';
+import { convertNFAtoDFA, parseText } from '../../utility/graph-utils';
 import GraphDisplay from './GraphDisplay';
 
 const GraphCreator: React.FC<{}> = (): React.ReactElement => {
@@ -22,10 +21,18 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 
 	return (
 		<div className="graph-creator">
-			{/* For now width/height are set in (s)css, but place here something eventually*/}
-			<GraphDisplay graph={graph} />
+			{
+				// display input graph only if it's not empty
+				graph.nodes.length !== 0 &&
+				<>
+					<section className="graph-creator__input-display">
+						<label>Input graph</label>
+						<GraphDisplay graph={graph} />
+					</section>
+				</>
+			}
 			<div className="graph-creator__input">
-				<label>Enter the NFA</label>
+				<label htmlFor="graph-input">Enter the NFA</label>
 				<textarea
 					id="graph-input"
 					className="graph-creator__input--textarea"
@@ -35,11 +42,20 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 						+ "f if ending node, or nothing without brackets if just a middle node]"
 						+ "\n\nThen graph is StartingNode->[input-in-brackets]FirstNode,SecondNode,..."}
 					ref={textAreaText} />
+				<button className="graph-creator__input--btn" onClick={debug}>Convert Graph!</button>
 			</div>
-			<button className="graph-creator__convert-btn" onClick={debug}>Convert Graph!</button>
 			{/*<button onClick={debug} className="graph-creator__debug-btn">Debug</button>*/}
 
-			{displayedGraph.nodes.length !== 0 && <GraphDisplay graph={displayedGraph} />}
+			{
+				displayedGraph.nodes.length !== 0 &&
+				// display output graph only if it's not empty
+				<>
+					<section className="graph-creator__output-display">
+						<label>Output graph</label>
+						<GraphDisplay graph={displayedGraph} />
+					</section>
+				</>
+			}
 		</div>
 	);
 }
