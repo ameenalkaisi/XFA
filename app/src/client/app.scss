@@ -12,7 +12,10 @@
 }
 
 .graph-creator {
-	.react-flow {
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+
+	.graph-display {
 		width: 20em;
 		height: 20em;
 

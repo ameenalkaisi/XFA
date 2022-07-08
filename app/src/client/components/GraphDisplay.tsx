@@ -128,12 +128,14 @@ const GraphDisplay: React.FC<{ graph: Graph, graphDir?: string }> = ({ graph, gr
 	}, [graph]);
 
 	return (
-		<ReactFlow
-			nodes={nodes} edges={edges}
-			nodesConnectable={false}
-			elementsSelectable={false}
-			edgeTypes={edgeTypes}
-			fitView />
+		<div className="graph-display">
+			<ReactFlow
+				nodes={nodes} edges={edges}
+				nodesConnectable={false}
+				elementsSelectable={false}
+				edgeTypes={edgeTypes}
+				fitView />
+		</div>
 	);
 }
 

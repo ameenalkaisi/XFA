@@ -1,11 +1,12 @@
 import * as React from 'react';
 import GraphCreator from './components/GraphCreator';
+import Footer from './components/Footer';
 
 const App: React.FC<{}> = (): React.ReactElement => {
 	return (
 		<>
 			<GraphCreator />
-			<footer className="footer"><p className="footer__progress-text">This site is a work in progress. Made by Ameen Al-Kaisi 2022</p></footer>
+			<Footer />
 		</>
 	);
 }
