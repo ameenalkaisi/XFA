@@ -6,6 +6,7 @@ import Info from './components/Info';
 const App: React.FC<{}> = (): React.ReactElement => {
 	return (
 		<>
+			{/* 1. center shit, 2. for mobile n stuff, 3. have different background for info page*/}
 			<GraphCreator />
 			<Info />
 			<Footer />

@@ -11,17 +11,27 @@
 	text-decoration: none;
 }
 
+h1 {
+	text-align: center;
+}
+
 .graph-creator {
 	display: grid;
-	grid-template-rows: 2fr 1fr;
+	grid-template-rows: auto 1fr;
 	grid-template-columns: 1fr 1fr;
 	grid-template-areas:
 		"left-display right-display"
-		"input input";
+		"input		  input";
+	justify-items: center;
 
 	.graph-display {
-		width: 20em;
-		height: 20em;
+		width: 40rem;
+		height: 30rem;
+
+		animation: 1s ease-in 0s 1 fromZeroWidthAndHeight;
+
+		border: 2px solid black;
+		border-radius: 2rem 2rem 0 2rem;
 
 		&__node {
 			width: fit-content;
@@ -41,9 +51,41 @@
 		grid-area: input;
 		justify-self: center;
 
+		display: flex;
+		flex-direction: column;
+		
+		label {
+			text-align: center;
+		}
+
 		&--textarea {
-			height: 15em;
+			height: 20rem;
 			width: 50em;
 		}
+
+		&-display {
+			text-align: center;
+		}
+	}
+
+	&__output-display {
+		text-align: center;
+	}
+}
+
+.info {
+	background-color: lightgray;
+	border-radius: 2rem;
+	margin: 1rem;
+
+	p {
+		text-align: center;
+	}
+}
+
+@keyframes fromZeroWidthAndHeight {
+	0% {
+		width: 0;
+		height: 0;
 	}
 }
