@@ -3,7 +3,7 @@ import Graph from '../../utility/graph';
 import { parseTextToGraph } from '../../utility/graph-utils';
 import GraphDisplay from './GraphDisplay';
 import axios from 'axios';
-import { mapSafeReplacer } from '../../utility/util';
+import { mapSafeReplacer, mapSafeReviver } from '../../utility/util';
 
 const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	// reference to text inside of text area for the graph's 
@@ -30,8 +30,7 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 			params: { graph: JSON.stringify(curGraph, mapSafeReplacer) }
 		}).then(response => {
 			// on success, set the displayed graph
-			console.log(JSON.stringify(response, mapSafeReplacer));
-			//setDisplayedGraph(response.data);
+			setDisplayedGraph(JSON.parse(JSON.stringify(response.data), mapSafeReviver));
 		}).catch(error => {
 			if (error.response) {
 				//response status is an error code

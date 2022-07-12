@@ -1,21 +1,18 @@
 import { convertNFAtoDFA } from '../utility/graph-utils';
+import { mapSafeReplacer, mapSafeReviver } from '../utility/util';
 import * as express from 'express';
 
 const router = express.Router();
 const path = require('path');
 
-/*
-router.get('/api/hello', (_req, res, _next) => {
-	res.json('World');
-});
-*/
-
 router.get('/api/convertNFAtoDFA/', (req, res) => {
 	const { graph } = req.query;
 
+	if(graph === undefined)
+		throw new Error('graph is undefined');
+
 	// first, parse the input into a Graph, then convert it to DFA, and return the DFA as a graph
-	//@ts-ignore
-	res.send(convertNFAtoDFA(graph));
+	res.send(JSON.stringify(convertNFAtoDFA(JSON.parse(graph.toString(), mapSafeReviver)), mapSafeReplacer));
 });
 
 router.get('/*', (_req, res) => {
