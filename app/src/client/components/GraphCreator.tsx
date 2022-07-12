@@ -1,7 +1,9 @@
 import * as React from 'react';
 import Graph from '../../utility/graph';
-import { convertNFAtoDFA, parseText } from '../../utility/graph-utils';
+import { parseTextToGraph } from '../../utility/graph-utils';
 import GraphDisplay from './GraphDisplay';
+import axios from 'axios';
+import { mapSafeReplacer } from '../../utility/util';
 
 const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	// reference to text inside of text area for the graph's 
@@ -10,13 +12,41 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	const [graph, setGraph] = React.useState<Graph>(new Graph());
 	const [displayedGraph, setDisplayedGraph] = React.useState<Graph>(new Graph());
 
-	function debug() {
+	async function debug() {
 		if (!textAreaText || !textAreaText.current)
 			return;
-		setGraph(parseText(textAreaText.current.value));
-		//console.log(JSON.stringify(parseText(textAreaText.current.value)));
-		let newDFAgraph: Graph = convertNFAtoDFA(parseText(textAreaText.current.value));
-		setDisplayedGraph(newDFAgraph);
+
+		// set the stuff here!
+		// ok to do this locally user should be able to easily
+		let curGraph = parseTextToGraph(textAreaText.current.value);
+		setGraph(curGraph);
+
+		//console.log(JSON.stringify(parseTextToGraph(textAreaText.current.value)));
+		//!---------------------------------------------- new stuff should be here, todo
+
+		// Convert NFA to DFA server-side as it is more complicated
+		// let newDFAgraph: Graph = convertNFAtoDFA(parseTextToGraph(textAreaText.current.value));
+		await axios.get('/api/convertNFAtoDFA/', {
+			params: { graph: JSON.stringify(curGraph, mapSafeReplacer) }
+		}).then(response => {
+			// on success, set the displayed graph
+			console.log(JSON.stringify(response, mapSafeReplacer));
+			//setDisplayedGraph(response.data);
+		}).catch(error => {
+			if (error.response) {
+				//response status is an error code
+				console.log(error.response.status);
+			}
+			else if (error.request) {
+				//response not received though the request was sent
+				console.log(error.request);
+			}
+			else {
+				//an error occurred when setting up the request
+				console.log(error.message);
+			}
+		});
+		//setDisplayedGraph(newDFAgraph);
 	}
 
 	return (

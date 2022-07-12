@@ -96,7 +96,7 @@ export function findNodeType(node: string): 's' | 'f' | 'm' | 'sf' {
 // realistically it's better to 
 // implement using a parser solution
 // but for now this will do
-export function parseText(text: string): Graph {
+export function parseTextToGraph(text: string): Graph {
 	let result = new Graph();
 	let lines = text.split('\n');
 
