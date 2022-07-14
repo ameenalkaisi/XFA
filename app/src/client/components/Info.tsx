@@ -2,7 +2,7 @@ import * as React from "react";
 
 const Info: React.FC<{}> = (): React.ReactElement => {
 	return (
-		<div className="info">
+		<section className="info">
 			<h1>Instructions...</h1>
 			<p>The syntax looks like this:</p>
 			<p>EXPRESSION ::= NODE DASH GREATER_THAN LBRACKET WORD RBRACKET NODE_LIST</p>
@@ -12,7 +12,7 @@ const Info: React.FC<{}> = (): React.ReactElement => {
 			<p>WORD ::= [a-zA-Z0-9_]+</p>
 
 			<h1><a href="https://www.geeksforgeeks.org/introduction-of-finite-automata/">What are NFAs or DFAs?</a></h1>
-		</div>
+		</section>
 	);
 }
 
