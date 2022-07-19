@@ -26,15 +26,14 @@ export function convertNFAtoDFA(graph: Graph): Graph {
 			// find the list of nodes that this sublist can go into
 			for (const node of nodes) {
 				// for each input, apply it with node[i],
-				// if it's not there don't push notin
+				// if NFA doesn't have input defined for that node, it must be a cycle
+				//  so add self to generatedSublist
 				// if it is there push sumn
 				const nodesNext = graph.edges.get(node + ',' + input);
 				if (nodesNext)
 					generatedSublist.push(...nodesNext);
+				else generatedSublist.push(node);
 			}
-
-			if (generatedSublist.length === 0)
-				continue;
 
 			// add it into the resulting graph
 			// filter to only have unique elements
@@ -102,7 +101,6 @@ export function parseTextToGraph(text: string): Graph {
 
 	// for each line, add each implied edge
 	for (let i = 0; i < lines.length; ++i) {
-
 		if (lines[i] == "") continue;
 
 		// parse character list
@@ -113,9 +111,7 @@ export function parseTextToGraph(text: string): Graph {
 				return val != '';
 			});
 			
-			console.log(allInputs);
 			result.addInputs(...allInputs);
-			console.log(JSON.stringify(result));
 			continue;
 		}
 

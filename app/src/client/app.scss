@@ -33,10 +33,13 @@ h1 {
 		border: 2px solid black;
 		border-radius: 2rem 2rem 0 2rem;
 
-		&__node {
-			width: fit-content;
-			height: fit-content;
+		.react-flow {
+			&__node {
+				width: fit-content;
+				height: fit-content;
+			}
 		}
+
 	}
 
 	.graph-display:nth-child(0) {
