@@ -64,6 +64,12 @@ class Graph {
 			this.finalNodes.push(node);
 		});
 	}
+	
+	public addInputs(...inputs: string[]): void {
+		inputs.forEach((input: string, _index: number): void => {
+			this.inputs.push(input);
+		});
+	}
 }
 
 export default Graph;

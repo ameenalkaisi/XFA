@@ -105,6 +105,21 @@ export function parseTextToGraph(text: string): Graph {
 
 		if (lines[i] == "") continue;
 
+		// parse character list
+		if (lines[i].charAt(0) == '[') {
+			// use characters [, ], and , as separators
+			// filters to not include any empty characters
+			let allInputs: string[] = lines[i].split(/[\],\[]/).filter((val: string, _index: number): boolean => {
+				return val != '';
+			});
+			
+			console.log(allInputs);
+			result.addInputs(...allInputs);
+			console.log(JSON.stringify(result));
+			continue;
+		}
+
+		// parse edge
 		let allNodes = lines[i].split('->[');
 		let mainNode = allNodes[0];
 
