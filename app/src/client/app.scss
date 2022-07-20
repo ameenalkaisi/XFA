@@ -17,11 +17,12 @@ h1 {
 
 .graph-creator {
 	display: grid;
-	grid-template-rows: auto 1fr;
+	grid-template-rows: auto 1fr auto;
 	grid-template-columns: 1fr 1fr;
 	grid-template-areas:
 		"left-display right-display"
-		"input		  input";
+		"input		  input"
+		"history      history";
 	justify-items: center;
 
 	.graph-display {
@@ -73,6 +74,14 @@ h1 {
 
 	&__output-display {
 		text-align: center;
+	}
+	
+	&__history {
+		grid-area: history;
+
+		h2 {
+			text-align: center;
+		}
 	}
 }
 

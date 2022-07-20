@@ -69,19 +69,6 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 
 	return (
 		<div className="graph-creator">
-			<section className='graph-creator__history'>
-				{
-					prevInputs.length !== 0 &&
-					<ul>
-						{
-							prevInputs.map((value: string, index: number): React.ReactElement => {
-								return (<li key={index} onClick={updateTextAreaToHistIndex.bind(this, index)}>{index + 1}. {value}</li>);
-							})
-						}
-					</ul>
-				}
-			</section>
-
 			{
 				// display input graph only if it's not empty
 				graph.nodes.length !== 0 &&
@@ -117,6 +104,23 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 					</section>
 				</>
 			}
+			<section className='graph-creator__history'>
+				{
+					prevInputs.length !== 0 &&
+					<>
+						<h2>History</h2>
+						<ul>
+							{
+								prevInputs.map((value: string, index: number): React.ReactElement => {
+									return (
+										<li key={index}
+											onClick={updateTextAreaToHistIndex.bind(this, index)}>{index + 1}. {value}</li>);
+								})
+							}
+						</ul>
+					</>
+				}
+			</section>
 		</div>
 	);
 }
