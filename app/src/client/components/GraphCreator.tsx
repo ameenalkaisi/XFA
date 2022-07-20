@@ -114,7 +114,8 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 								prevInputs.map((value: string, index: number): React.ReactElement => {
 									return (
 										<li key={index}
-											onClick={updateTextAreaToHistIndex.bind(this, index)}>{index + 1}. {value}</li>);
+											onClick={updateTextAreaToHistIndex.bind(this, index)}
+											className="btn btn-primary">{index + 1}. {value}</li>);
 								})
 							}
 						</ul>
