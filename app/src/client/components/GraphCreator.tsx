@@ -9,12 +9,24 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	// reference to text inside of text area for the graph's 
 	// text representation 
 	const textAreaText = React.useRef<HTMLTextAreaElement>(null);
+	const [prevInputs, setPrevInputs] = React.useState<Array<string>>([]);
 	const [graph, setGraph] = React.useState<Graph>(new Graph());
 	const [displayedGraph, setDisplayedGraph] = React.useState<Graph>(new Graph());
 
-	async function debug() {
+	async function applyConversion() {
 		if (!textAreaText || !textAreaText.current)
 			return;
+
+		// add this input into the history of inputs by user
+		let newPrevInputs = prevInputs.slice();
+		newPrevInputs.push(textAreaText.current.value);
+
+		// don't add duplicate values
+		newPrevInputs = newPrevInputs.filter((value, index, self) => {
+			return self.indexOf(value) === index;
+		});
+
+		setPrevInputs(newPrevInputs);
 
 		// set the stuff here!
 		// ok to do this locally user should be able to easily
@@ -45,11 +57,31 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 				console.log(error.message);
 			}
 		});
-		//setDisplayedGraph(newDFAgraph);
+	}
+
+	function updateTextAreaToHistIndex(index: number) {
+		if (textAreaText.current) {
+			textAreaText.current.value = prevInputs.at(index) ?? "";
+
+			applyConversion();
+		}
 	}
 
 	return (
 		<div className="graph-creator">
+			<section className='graph-creator__history'>
+				{
+					prevInputs.length !== 0 &&
+					<ul>
+						{
+							prevInputs.map((value: string, index: number): React.ReactElement => {
+								return (<li key={index} onClick={updateTextAreaToHistIndex.bind(this, index)}>{index + 1}. {value}</li>);
+							})
+						}
+					</ul>
+				}
+			</section>
+
 			{
 				// display input graph only if it's not empty
 				graph.nodes.length !== 0 &&
@@ -71,9 +103,9 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 						+ "f if ending node, or nothing without brackets if just a middle node]"
 						+ "\n\nThen graph is StartingNode->[input-in-brackets]FirstNode,SecondNode,..."}
 					ref={textAreaText} />
-				<button className="graph-creator__input--btn" onClick={debug}>Convert Graph!</button>
+				<button className="graph-creator__input--btn" onClick={applyConversion}>Convert Graph!</button>
 			</div>
-			{/*<button onClick={debug} className="graph-creator__debug-btn">Debug</button>*/}
+			{/*<button onClick={applyConversion} className="graph-creator__applyConversion-btn">Debug</button>*/}
 
 			{
 				displayedGraph.nodes.length !== 0 &&

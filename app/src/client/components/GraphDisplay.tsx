@@ -40,6 +40,7 @@ const GraphDisplay: React.FC<{ graph: Graph, graphDir?: string }> = ({ graph, gr
 			else if (inFinalNodes)
 				nodeStyle = { backgroundColor: 'lightgreen' };
 			else nodeStyle = { backgroundColor: 'white' };
+
 			resultNodes.push({
 				id: val,
 				data: { label: val },
