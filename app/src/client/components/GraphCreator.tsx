@@ -2,8 +2,10 @@ import * as React from 'react';
 import Graph from '../../utility/graph';
 import { parseTextToGraph } from '../../utility/graph-utils';
 import GraphDisplay from './GraphDisplay';
-import axios from 'axios';
-import { mapSafeReplacer, mapSafeReviver } from '../../utility/util';
+//import axios from 'axios';
+//import { mapSafeReplacer, mapSafeReviver } from '../../utility/util';
+import { trpc } from '../../utility/trpc';
+import superjson from 'superjson';
 
 const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	// reference to text inside of text area for the graph's 
@@ -11,7 +13,10 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	const textAreaText = React.useRef<HTMLTextAreaElement>(null);
 	const [prevInputs, setPrevInputs] = React.useState<Array<string>>([]);
 	const [graph, setGraph] = React.useState<Graph>(new Graph());
-	const [displayedGraph, setDisplayedGraph] = React.useState<Graph>(new Graph());
+
+	//const [displayedGraph, setDisplayedGraph] = React.useState<Graph>(new Graph());
+	const displayedGraph = trpc.useQuery(['convertNFAtoDFA', graph ]);
+	const trpcContext = trpc.useContext();
 
 	async function applyConversion() {
 		if (!textAreaText || !textAreaText.current)
@@ -32,13 +37,14 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 		// ok to do this locally user should be able to easily
 		let curGraph = parseTextToGraph(textAreaText.current.value);
 		setGraph(curGraph);
+		trpcContext.invalidateQueries(['convertNFAtoDFA']);
 
 		//console.log(JSON.stringify(parseTextToGraph(textAreaText.current.value)));
 		//!---------------------------------------------- new stuff should be here, todo
 
 		// Convert NFA to DFA server-side as it is more complicated
 		// let newDFAgraph: Graph = convertNFAtoDFA(parseTextToGraph(textAreaText.current.value));
-		await axios.get('/api/convertNFAtoDFA/', {
+		/*await axios.get('/api/convertNFAtoDFA/', {
 			params: { graph: JSON.stringify(curGraph, mapSafeReplacer) }
 		}).then(response => {
 			// on success, set the displayed graph
@@ -56,7 +62,7 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 				//an error occurred when setting up the request
 				console.log(error.message);
 			}
-		});
+		});*/
 	}
 
 	function updateTextAreaToHistIndex(index: number) {
@@ -95,12 +101,12 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 			{/*<button onClick={applyConversion} className="graph-creator__applyConversion-btn">Debug</button>*/}
 
 			{
-				displayedGraph.nodes.length !== 0 &&
+				displayedGraph.data && displayedGraph.data.nodes.length !== 0 &&
 				// display output graph only if it's not empty
 				<>
 					<section className="graph-creator__output-display">
 						<label>Output graph</label>
-						<GraphDisplay graph={displayedGraph} />
+						<GraphDisplay graph={displayedGraph.data} />
 					</section>
 				</>
 			}

@@ -43,10 +43,11 @@ class Graph {
 		const key: string = node1 + "," + input;
 		if(!this.edges.has(key))
 			this.edges.set(key, [node2]);
-		//@ts-ignore
-		else if(!this.edges.get(key).includes(node2))
-			//@ts-ignore
-			this.edges.get(key).push(node2);
+		// note, it definetly has the key
+		// as every time it doesn't it will set it to 
+		// an array of single element
+		else if(!this.edges.get(key)?.includes(node2))
+			this.edges.get(key)?.push(node2);
 	}
 
 	// after pushing every node, set the nodes that are 
@@ -72,4 +73,5 @@ class Graph {
 	}
 }
 
+export type GraphType = typeof Graph;
 export default Graph;

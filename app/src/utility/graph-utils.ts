@@ -2,6 +2,10 @@ import Graph from './graph';
 import { Queue, array_safe_includes } from './util';
 
 export function convertNFAtoDFA(graph: Graph): Graph {
+	// if empty graph, just return itself without any changes
+	if(graph.nodes.length === 0)
+		return graph;
+
 	let result: Graph = new Graph();
 	result.addStartNodes(graph.startNodes[0]);
 

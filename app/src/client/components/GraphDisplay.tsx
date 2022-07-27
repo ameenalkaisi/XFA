@@ -1,8 +1,8 @@
 import * as React from 'react';
-import ReactFlow, { ConnectionLineType, Edge, MarkerType, Node, Position, useEdgesState, useNodesState } from 'react-flow-renderer';
+import ReactFlow, { Edge, MarkerType, Node, Position, useEdgesState, useNodesState } from 'react-flow-renderer';
 import Graph from '../../utility/graph';
 import dagre from 'dagre';
-import { SmartBezierEdge, SmartEdge, SmartStepEdge, SmartStraightEdge } from '@tisoap/react-flow-smart-edge'
+import { SmartBezierEdge } from '@tisoap/react-flow-smart-edge'
 
 // NOTE: currently everything is being done in front-end, maybe should try backend later
 const GraphDisplay: React.FC<{ graph: Graph, graphDir?: string }> = ({ graph, graphDir }): React.ReactElement => {
