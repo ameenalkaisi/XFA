@@ -1,9 +1,9 @@
 import { convertNFAtoDFA } from '../utility/graph-utils';
 import { mapSafeReplacer, mapSafeReviver } from '../utility/util';
 import * as express from 'express';
+import * as path from 'path';
 
 const router = express.Router();
-const path = require('path');
 
 router.get('/api/convertNFAtoDFA/', (req, res) => {
 	const { graph } = req.query;
