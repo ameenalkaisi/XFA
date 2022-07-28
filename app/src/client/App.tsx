@@ -3,6 +3,7 @@ import GraphCreator from './components/GraphCreator';
 import Footer from './components/Footer';
 import Info from './components/Info';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { trpc } from '../utility/trpc';
 import superjson from 'superjson';
 
@@ -16,6 +17,7 @@ const App: React.FC<{}> = (): React.ReactElement => {
 				<GraphCreator />
 				<Info />
 				<Footer />
+				<ReactQueryDevtools />
 			</QueryClientProvider>
 		</trpc.Provider>
 	);

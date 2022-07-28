@@ -5,7 +5,6 @@ import GraphDisplay from './GraphDisplay';
 //import axios from 'axios';
 //import { mapSafeReplacer, mapSafeReviver } from '../../utility/util';
 import { trpc } from '../../utility/trpc';
-import superjson from 'superjson';
 
 const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	// reference to text inside of text area for the graph's 
@@ -14,8 +13,16 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	const [prevInputs, setPrevInputs] = React.useState<Array<string>>([]);
 	const [graph, setGraph] = React.useState<Graph>(new Graph());
 
-	//const [displayedGraph, setDisplayedGraph] = React.useState<Graph>(new Graph());
-	const displayedGraph = trpc.useQuery(['convertNFAtoDFA', graph ]);
+	const [displayedGraph, setDisplayedGraph] = React.useState<Graph>(new Graph());
+	const displayedGraphQuery = trpc.useQuery(['convertNFAtoDFA', graph.toSchemaGraph()],
+		{
+			onSuccess: (data) => {
+				let dfaGraph: Graph = new Graph();
+				dfaGraph.initFromSchemaGraph(data);
+
+				setDisplayedGraph(dfaGraph);
+			}
+		});
 	const trpcContext = trpc.useContext();
 
 	async function applyConversion() {
@@ -101,12 +108,12 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 			{/*<button onClick={applyConversion} className="graph-creator__applyConversion-btn">Debug</button>*/}
 
 			{
-				displayedGraph.data && displayedGraph.data.nodes.length !== 0 &&
+				displayedGraph.nodes.length !== 0 &&
 				// display output graph only if it's not empty
 				<>
 					<section className="graph-creator__output-display">
 						<label>Output graph</label>
-						<GraphDisplay graph={displayedGraph.data} />
+						<GraphDisplay graph={displayedGraph} />
 					</section>
 				</>
 			}

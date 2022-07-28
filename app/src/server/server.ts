@@ -3,14 +3,14 @@ import * as express from 'express';
 
 import * as trpcExpress from '@trpc/server/adapters/express';
 import * as trpc from '@trpc/server';
-import { z } from 'zod';
 import superjson from 'superjson';
 
-import Graph from '../utility/graph';
+import Graph, { GraphSchema } from '../utility/graph';
 import { convertNFAtoDFA } from '../utility/graph-utils';
 
 const app = express();
 const trpcRouter = trpc.router()
+	.transformer(superjson)
 	.middleware(async ({ path, type, ctx, next, rawInput, meta }) => {
 		const start = Date.now();
 		const result = await next();
@@ -22,13 +22,25 @@ const trpcRouter = trpc.router()
 		return result;
 	})
 	.query('convertNFAtoDFA', {
-		input: z.instanceof(Graph),
-		output: z.instanceof(Graph),
+		input: GraphSchema,
+		output: GraphSchema,
 		async resolve(input) {
-			return convertNFAtoDFA(input.input);
+			// convert things here, then push it out using schema probably
+			let graph: Graph = new Graph();
+			graph.initFromSchemaGraph(input.input);
+			/*
+			graph.addStartNodes(...input.input.startNodes);
+			graph.addFinalNodes(...input.input.finalNodes);
+			graph.nodes = input.input.nodes.slice();
+			graph.addInputs(...input.input.inputs);
+			graph.edges.values = input.input.edges.values.slice();
+			graph.edges.keys = input.input.edges.keys.slice();
+			*/
+
+			const result: Graph = convertNFAtoDFA(graph);
+			return result.toSchemaGraph();
 		}
-	})
-	.transformer(superjson);
+	});
 
 app.use('/trpc',
 	trpcExpress.createExpressMiddleware({
