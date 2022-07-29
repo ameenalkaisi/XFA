@@ -3,14 +3,15 @@ import * as express from 'express';
 
 import * as trpcExpress from '@trpc/server/adapters/express';
 import * as trpc from '@trpc/server';
-import superjson from 'superjson';
 
 import Graph, { GraphSchema } from '../utility/graph';
 import { convertNFAtoDFA } from '../utility/graph-utils';
 
+import superjson from 'superjson';
+
 const app = express();
 const trpcRouter = trpc.router()
-	.transformer(superjson)
+	/*
 	.middleware(async ({ path, type, ctx, next, rawInput, meta }) => {
 		const start = Date.now();
 		const result = await next();
@@ -21,6 +22,8 @@ const trpcRouter = trpc.router()
 
 		return result;
 	})
+	*/
+	.transformer(superjson)
 	.query('convertNFAtoDFA', {
 		input: GraphSchema,
 		output: GraphSchema,
@@ -28,6 +31,7 @@ const trpcRouter = trpc.router()
 			// convert things here, then push it out using schema probably
 			let graph: Graph = new Graph();
 			graph.initFromSchemaGraph(input.input);
+
 			/*
 			graph.addStartNodes(...input.input.startNodes);
 			graph.addFinalNodes(...input.input.finalNodes);
@@ -42,6 +46,8 @@ const trpcRouter = trpc.router()
 		}
 	});
 
+export type AppRouter = typeof trpcRouter;
+
 app.use('/trpc',
 	trpcExpress.createExpressMiddleware({
 		router: trpcRouter
@@ -52,4 +58,3 @@ app.use(express.static('public'));
 const port = process.env.PORT || 43000;
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
 
-export type AppRouter = typeof trpcRouter;

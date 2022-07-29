@@ -14,6 +14,10 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	const [graph, setGraph] = React.useState<Graph>(new Graph());
 
 	const [displayedGraph, setDisplayedGraph] = React.useState<Graph>(new Graph());
+	
+	//not sure what's going on here, but keeps giving undefined errors
+	//still trpc is good to use as it makes end points easy to implement
+	//@ts-ignore
 	const displayedGraphQuery = trpc.useQuery(['convertNFAtoDFA', graph.toSchemaGraph()],
 		{
 			onSuccess: (data) => {

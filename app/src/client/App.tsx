@@ -3,21 +3,20 @@ import GraphCreator from './components/GraphCreator';
 import Footer from './components/Footer';
 import Info from './components/Info';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+//import { ReactQueryDevtools } from 'react-query/devtools';
 import { trpc } from '../utility/trpc';
 import superjson from 'superjson';
 
 const App: React.FC<{}> = (): React.ReactElement => {
 	const [queryClient] = React.useState(() => new QueryClient());
 	const [trpcClient] = React.useState(() =>
-		trpc.createClient({ transformer: superjson, url: 'http://localhost:43000/trpc' }));
+		trpc.createClient({ url: 'http://localhost:43000/trpc', transformer: superjson }));
 	return (
 		<trpc.Provider client={trpcClient} queryClient={queryClient}>
 			<QueryClientProvider client={queryClient}>
 				<GraphCreator />
 				<Info />
 				<Footer />
-				<ReactQueryDevtools />
 			</QueryClientProvider>
 		</trpc.Provider>
 	);

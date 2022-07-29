@@ -9,6 +9,8 @@ export const GraphSchema = z.object({
 	edges: CustomMapSchema
 });
 
+export type GraphSchemaType = z.infer<typeof GraphSchema>;
+
 class Graph {
 	public nodes: string[];
 
