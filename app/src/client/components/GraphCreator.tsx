@@ -14,10 +14,12 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	const [graph, setGraph] = React.useState<Graph>(new Graph());
 
 	const [displayedGraph, setDisplayedGraph] = React.useState<Graph>(new Graph());
-	
+
 	//not sure what's going on here, but keeps giving undefined errors
 	//still trpc is good to use as it makes end points easy to implement
 	//@ts-ignore
+	// depends on graph.toSchemaGraph(), not sure how it checks it but it works
+	// without having to manually invalidate the query
 	const displayedGraphQuery = trpc.useQuery(['convertNFAtoDFA', graph.toSchemaGraph()],
 		{
 			onSuccess: (data) => {
@@ -27,7 +29,14 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 				setDisplayedGraph(dfaGraph);
 			}
 		});
-	const trpcContext = trpc.useContext();
+	// todo, finish prevHistory and delete this
+	const prevHistoryQuery = trpc.useQuery(['getPrevHistory'], {
+		onSuccess: (data) => {
+			setPrevInputs(data ?? []);
+		}
+	});
+
+	const prevHistoryMutation = trpc.useMutation(['setPrevHistory']);
 
 	async function applyConversion() {
 		if (!textAreaText || !textAreaText.current)
@@ -48,7 +57,7 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 		// ok to do this locally user should be able to easily
 		let curGraph = parseTextToGraph(textAreaText.current.value);
 		setGraph(curGraph);
-		trpcContext.invalidateQueries(['convertNFAtoDFA']);
+		//trpcContext.invalidateQueries(['convertNFAtoDFA']);
 
 		//console.log(JSON.stringify(parseTextToGraph(textAreaText.current.value)));
 		//!---------------------------------------------- new stuff should be here, todo
@@ -83,6 +92,11 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 			applyConversion();
 		}
 	}
+
+	// every time prevInputs changes, update it on the server
+	React.useEffect(() => {
+		prevHistoryMutation.mutate(prevInputs);
+	}, [prevInputs]);
 
 	return (
 		<div className="graph-creator">

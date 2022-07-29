@@ -10,13 +10,20 @@ import superjson from 'superjson';
 const App: React.FC<{}> = (): React.ReactElement => {
 	const [queryClient] = React.useState(() => new QueryClient());
 	const [trpcClient] = React.useState(() =>
-		trpc.createClient({ url: 'http://localhost:43000/trpc', transformer: superjson }));
+		trpc.createClient({
+			url: 'http://localhost:43000/trpc',
+			transformer: superjson,
+			headers: () => ({
+				authorization: 'temporary secret'
+			})
+		}));
 	return (
 		<trpc.Provider client={trpcClient} queryClient={queryClient}>
 			<QueryClientProvider client={queryClient}>
 				<GraphCreator />
 				<Info />
 				<Footer />
+				{/*<ReactQueryDevtools />*/}
 			</QueryClientProvider>
 		</trpc.Provider>
 	);
