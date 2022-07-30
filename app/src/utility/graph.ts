@@ -1,4 +1,4 @@
-import CustomMap, { CustomMapSchema } from '../utility/CustomMap';
+import CustomMap, { CustomMapSchema } from '../utility/customMap';
 import { z } from 'zod';
 
 export const GraphSchema = z.object({
