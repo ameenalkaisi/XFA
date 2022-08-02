@@ -99,5 +99,5 @@ app.use('/trpc',
 app.use(express.static('public'));
 app.use(apiRouter);
 
-const port = process.env.PORT || 43000;
+const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
