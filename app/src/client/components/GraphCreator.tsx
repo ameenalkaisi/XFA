@@ -93,6 +93,20 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 		}
 	}
 
+	function removeHistoryIndex(index: number) {
+		let newPrevInputs: string[] = prevInputs.slice();
+
+		// shift the index to the end then pop
+		for (let i: number = index; i < newPrevInputs.length - 1; ++i) {
+			const temp: string = newPrevInputs[i + 1];
+			newPrevInputs[i + 1] = newPrevInputs[i];
+			newPrevInputs[i] = temp;
+		}
+		newPrevInputs.pop();
+
+		setPrevInputs(newPrevInputs);
+	}
+
 	// every time prevInputs changes, update it on the server
 	React.useEffect(() => {
 		prevHistoryMutation.mutate(prevInputs);
@@ -144,9 +158,10 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 							{
 								prevInputs.map((value: string, index: number): React.ReactElement => {
 									return (
-										<li key={index}
-											onClick={updateTextAreaToHistIndex.bind(this, index)}
-											className="btn btn-primary">{index + 1}. {value}</li>
+										<li key={index}>
+											<p className="btn btn-primary" onClick={updateTextAreaToHistIndex.bind(this, index)}>{value}</p>
+											<button className="btn btn-warning" onClick={removeHistoryIndex.bind(this, index)}>X</button>
+										</li>
 									);
 								})
 							}
