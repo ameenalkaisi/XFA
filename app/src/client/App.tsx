@@ -11,10 +11,10 @@ const App: React.FC<{}> = (): React.ReactElement => {
 	const [queryClient] = React.useState(() => new QueryClient());
 	const [trpcClient] = React.useState(() =>
 		trpc.createClient({
-			url: 'http://localhost:8080/trpc',
+			url: process.env.SERVER_URI + '/trpc',
 			transformer: superjson,
 			headers: () => ({
-				authorization: 'temporary secret'
+				authorization: process.env.SESSION_SECRET
 			})
 		}));
 	return (

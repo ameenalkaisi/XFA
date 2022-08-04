@@ -1,5 +1,6 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
+const Dotenv = require('dotenv-webpack');
 
 const serverConfig = {
 	mode: process.env.NODE_ENV || 'development',
@@ -27,7 +28,10 @@ const serverConfig = {
 	node: {
 		__dirname: false
 	},
-	externals: [nodeExternals()]
+	externals: [nodeExternals()],
+	plugins: [
+		new Dotenv()
+	]
 };
 
 const clientConfig = {
@@ -64,7 +68,10 @@ const clientConfig = {
 	output: {
 		filename: 'app.js',
 		path: path.resolve(__dirname, 'public/js')
-	}
+	},
+	plugins: [
+		new Dotenv()
+	]
 };
 
 module.exports = [serverConfig, clientConfig];

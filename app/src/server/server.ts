@@ -82,7 +82,7 @@ const trpcRouter = trpc.router<Context>()
 export type AppRouter = typeof trpcRouter;
 
 app.use(session({
-	secret: 'temporary secret',
+	secret: process.env.SESSION_SECRET || '',
 	saveUninitialized: false,
 	resave: false,
 	cookie: {
