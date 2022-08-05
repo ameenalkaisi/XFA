@@ -5,6 +5,7 @@ import GraphDisplay from './GraphDisplay';
 //import axios from 'axios';
 //import { mapSafeReplacer, mapSafeReviver } from '../../utility/util';
 import { trpc } from '../../utility/trpc';
+import Accordion from 'react-bootstrap/Accordion';
 
 const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	// reference to text inside of text area for the graph's 
@@ -152,21 +153,30 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 			<section className='graph-creator__history'>
 				{
 					prevInputs.length !== 0 &&
-					<>
-						<h2>History</h2>
-						<ul>
-							{
-								prevInputs.map((value: string, index: number): React.ReactElement => {
-									return (
-										<li key={index}>
-											<p className="btn btn-primary" onClick={updateTextAreaToHistIndex.bind(this, index)}>{value}</p>
-											<button className="btn btn-warning" onClick={removeHistoryIndex.bind(this, index)}>X</button>
-										</li>
-									);
-								})
-							}
-						</ul>
-					</>
+					<Accordion>
+						<Accordion.Item eventKey='0'>
+							<Accordion.Header>History</Accordion.Header>
+
+							<Accordion.Body>
+								<ul>
+									{
+										prevInputs.map((value: string, index: number): React.ReactElement => {
+											return (
+												<li key={index}>
+													<p
+														className="btn btn-primary"
+														onClick={updateTextAreaToHistIndex.bind(this, index)}>{value}</p>
+													<button
+														className="btn btn-warning"
+														onClick={removeHistoryIndex.bind(this, index)}>X</button>
+												</li>
+											);
+										})
+									}
+								</ul>
+							</Accordion.Body>
+						</Accordion.Item>
+					</Accordion>
 				}
 			</section>
 		</div>
