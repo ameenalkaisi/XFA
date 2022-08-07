@@ -1,0 +1,2 @@
+Node1[s]->[edge-name]Node2,Node3,Node4[f]
+Node3->[another-edge-name]Node4

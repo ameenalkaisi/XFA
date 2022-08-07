@@ -20,6 +20,7 @@ const App: React.FC<{}> = (): React.ReactElement => {
 	return (
 		<trpc.Provider client={trpcClient} queryClient={queryClient}>
 			<QueryClientProvider client={queryClient}>
+				<a className="btn btn-tertiary" href={process.env.MAIN_SITE}>Back to main site</a>
 				<GraphCreator />
 				<Info />
 				<Footer />

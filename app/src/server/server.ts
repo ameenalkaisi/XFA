@@ -6,6 +6,7 @@ import * as trpc from '@trpc/server';
 
 import Graph, { GraphSchema } from '../utility/graph';
 import { convertNFAtoDFA } from '../utility/graph-utils';
+import { loadSampleGraphs } from '../utility/io';
 
 import { z } from 'zod';
 
@@ -70,6 +71,12 @@ const trpcRouter = trpc.router<Context>()
 			// return it through to the client
 
 			return ctx.req.session.prevHistory;
+		}
+	})
+	.query('getSampleGraphs', {
+		output: z.string().array(),
+		async resolve() {
+			return loadSampleGraphs();
 		}
 	})
 	.mutation('setPrevHistory', {

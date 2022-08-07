@@ -6,6 +6,7 @@ import GraphDisplay from './GraphDisplay';
 //import { mapSafeReplacer, mapSafeReviver } from '../../utility/util';
 import { trpc } from '../../utility/trpc';
 import Accordion from 'react-bootstrap/Accordion';
+import Samples from './Samples'
 
 const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 	// reference to text inside of text area for the graph's 
@@ -118,13 +119,12 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 			{
 				// display input graph only if it's not empty
 				graph.nodes.length !== 0 &&
-				<>
-					<section className="graph-creator__input-display">
-						<label>Input graph</label>
-						<GraphDisplay graph={graph} />
-					</section>
-				</>
+				<section className="graph-creator__input-display">
+					<label>Input graph</label>
+					<GraphDisplay graph={graph} />
+				</section>
 			}
+			<Samples textAreaText={textAreaText.current} applyConversion={applyConversion}/>
 			<div className="graph-creator__input">
 				<label htmlFor="graph-input">Enter the NFA</label>
 				<textarea
@@ -143,12 +143,10 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 			{
 				displayedGraph.nodes.length !== 0 &&
 				// display output graph only if it's not empty
-				<>
-					<section className="graph-creator__output-display">
-						<label>Output graph</label>
-						<GraphDisplay graph={displayedGraph} />
-					</section>
-				</>
+				<section className="graph-creator__output-display">
+					<label>Output graph</label>
+					<GraphDisplay graph={displayedGraph} />
+				</section>
 			}
 			<section className='graph-creator__history'>
 				{

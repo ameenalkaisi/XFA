@@ -3,7 +3,7 @@ import { Queue, array_safe_includes } from './util';
 
 export function convertNFAtoDFA(graph: Graph): Graph {
 	// if empty graph, just return itself without any changes
-	if(graph.nodes.length === 0)
+	if (graph.nodes.length === 0)
 		return graph;
 
 	let result: Graph = new Graph();
@@ -114,7 +114,7 @@ export function parseTextToGraph(text: string): Graph {
 			let allInputs: string[] = lines[i].split(/[\],\[]/).filter((val: string, _index: number): boolean => {
 				return val != '';
 			});
-			
+
 			result.addInputs(...allInputs);
 			continue;
 		}
@@ -167,3 +167,24 @@ export function parseTextToGraph(text: string): Graph {
 export function filterNonMiddleNode(text: string): string {
 	return text.substring(0, text.indexOf('['));
 }
+
+/*
+function loadSampleGraph(file: string): Graph {
+	readFile(file, (_err, data): void => {
+		console.log(JSON.stringify(file));
+	});
+
+	return new Graph();
+}
+
+export function loadSampleGraphs(): Graph[] {
+	const graphs: Graph[] = [];
+
+	readdir("../assets/samples", (_err, files): void => {
+		for (const file of files)
+			graphs.push(loadSampleGraph(file));
+	});
+
+	return graphs;
+}
+*/
