@@ -124,7 +124,7 @@ const GraphCreator: React.FC<{}> = (): React.ReactElement => {
 					<GraphDisplay graph={graph} />
 				</section>
 			}
-			<Samples textAreaText={textAreaText.current} applyConversion={applyConversion}/>
+			<Samples textAreaText={textAreaText.current} applyConversion={applyConversion} />
 			<div className="graph-creator__input">
 				<label htmlFor="graph-input">Enter the NFA</label>
 				<textarea

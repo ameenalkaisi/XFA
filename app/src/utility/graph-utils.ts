@@ -168,23 +168,3 @@ export function filterNonMiddleNode(text: string): string {
 	return text.substring(0, text.indexOf('['));
 }
 
-/*
-function loadSampleGraph(file: string): Graph {
-	readFile(file, (_err, data): void => {
-		console.log(JSON.stringify(file));
-	});
-
-	return new Graph();
-}
-
-export function loadSampleGraphs(): Graph[] {
-	const graphs: Graph[] = [];
-
-	readdir("../assets/samples", (_err, files): void => {
-		for (const file of files)
-			graphs.push(loadSampleGraph(file));
-	});
-
-	return graphs;
-}
-*/
